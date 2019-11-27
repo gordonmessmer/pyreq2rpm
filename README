@@ -1,0 +1,100 @@
+PEP 440 defines several version comparison operators, some of which do
+not exist in RPM, and some which follow slightly different rules with
+regard to version identifiers.
+
+Python packaging version identifiers have two significant differences
+from RPM's version identifiers.  The first is that version a version
+identifier may have a '.*' suffix, which indicates that only the
+version identifier prefix must match in order to satisfy the
+condition, whereas rpm does not provide matching by glob patterns.
+The second is that python will "zero pad" a version identifier during
+comparison to ensure that the versions being compared are of the same
+length, whereas trailing zeros are significant in rpm's version
+comparisons, resulting in a value greater than a version with a
+matching prefix but no trailing zeros.
+
+
+    ~=: Compatible release clause
+
+The compatible release operator has no analog in RPM.  The preferred
+format for an equivalent RPM requirement statement is:
+
+(name >= x.y.z with name < x.(y+1))
+
+In order to create the upper version boundary, the least significant
+version number should be dropped, and the next least significant
+version number should be incremented by one.
+
+Trailing dot-zero suffixes should be removed from the original version
+identifier.
+
+
+    ==: Version matching clause
+
+The version matching clause in RPM is '='.  The preferred format for
+an equivalent RPM requirement statement is:
+
+name = version
+
+If the version identifier has a '.*' suffix, the '*' character should
+be replaced with a '0', and the matching clause should be treated as
+if it were a compatible release operator instead, as described above.
+
+Trailing dot-zero suffixes should be removed from the version
+identifier.
+
+
+    !=: Version exclusion clause
+
+The version exclusion clause has no analog in RPM.  The preferred
+format for an equivalent RPM requirement statement is:
+
+(name < version or name > version)
+
+If the version identifier has a '.*' suffix, the suffix should be
+removed.  In order to create the lower version boundary, the least
+significant version number should be incremented by one.
+
+Trailing dot-zero suffixes should be removed from the version
+identifier.
+
+
+    <=, >=: Inclusive ordered comparison clause
+    <, >: Exclusive ordered comparison clause
+
+The operators above are similar to the same operators in RPM.
+
+Trailing dot-zero suffixes should be removed from the version
+identifier.
+
+
+    ===: Arbitrary equality clause.
+
+The arbitrary equality clause is not supported.
+
+
+
+References:
+
+https://www.python.org/dev/peps/pep-0440/#version-specifiers
+
+    ~=: Compatible release clause
+    ==: Version matching clause
+    !=: Version exclusion clause
+    <=, >=: Inclusive ordered comparison clause
+    <, >: Exclusive ordered comparison clause
+    ===: Arbitrary equality clause.
+
+    The comma (",") is equivalent to a logical and operator
+
+https://rpm.org/user_doc/dependencies.html
+https://rpm.org/user_doc/boolean_dependencies.html
+
+    Instead of ‘>=’, you may also use ‘<’, ‘>’, ‘<=’, or ‘=’.
+
+Dot-zero suffixes are significant in rpm:
+
+    $ rpmdev-vercmp 1.0-1 1-3
+    1.0-1 > 1-3
+    $ rpmdev-vercmp 1.0-1 1.0-3
+    1.0-1 < 1.0-3
