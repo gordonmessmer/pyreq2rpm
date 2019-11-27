@@ -22,7 +22,7 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from pkg_resources import parse_version
+from pkg_resources import parse_version, Requirement
 
 version_ids = ('2.4.8', '2.4.8.0', '2.4.8.1', '2.4.8.*', '2.0', '2', '2.*',
                '2.4.8b5', '2.0.0b5', '2.4.8.post1', '2.0.post1')
@@ -109,4 +109,8 @@ operators = {'~=': convert_compatible,
 name = 'foobar'
 for x in operators.keys():
     for y in version_ids:
+        try:
+            Requirement('%s %s %s' % (name, x, y))
+        except:
+            print('%s %s %s is invalid in Requirements' % (name, x, y))
         print('%s %s : %s' % (x, y, operators[x](name, x, y)))
