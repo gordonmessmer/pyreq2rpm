@@ -95,7 +95,13 @@ def convert_not_equal(name, operator, version_id):
         name, version, name, lower_version)
 
 def convert_ordered(name, operator, version_id):
-    version = RpmVersion(version_id)
+    if version_id.endswith('.*'):
+        version_id = version_id[:-2]
+        version = RpmVersion(version_id)
+        if '>' in operator:
+            version.increment()
+    else:
+        version = RpmVersion(version_id)
     return '%s %s %s' % (name, operator, version)
 
 operators = {'~=': convert_compatible,
