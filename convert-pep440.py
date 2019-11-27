@@ -25,7 +25,7 @@
 from pkg_resources import parse_version
 
 version_ids = ('2.4.8', '2.4.8.0', '2.4.8.1', '2.4.8.*', '2.0', '2', '2.*',
-               '2.4.8b5', '2.0.0b5')
+               '2.4.8b5', '2.0.0b5', '2.4.8.post1', '2.0.post1')
 
 class RpmVersion():
     def __init__(self, version_id):
@@ -41,6 +41,9 @@ class RpmVersion():
 
     def increment(self):
         self.version[-1] += 1
+        self.pre = None
+        self.dev = None
+        self.post = None
         return self
 
     def __str__(self):
@@ -54,7 +57,9 @@ class RpmVersion():
             self.version.pop()
         rpm_version = '.'.join(str(x) for x in self.version)
         if self.pre:
-            rpm_suffix = '~%s%d' % (self.pre[0], self.pre[1])
+            rpm_suffix = '~%s' % ''.join(str(x) for x in self.pre)
+        elif self.post:
+            rpm_suffix = '^post%d' % self.post[1]
         else:
             rpm_suffix = ''
         return '%s%s%s' % (rpm_epoch, rpm_version, rpm_suffix)
