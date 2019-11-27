@@ -19,7 +19,8 @@
 
 from pkg_resources import parse_version
 
-version_ids = ('2.4.8', '2.4.8.0', '2.4.8.1', '2.4.8.*', '2.0', '2', '2.*')
+version_ids = ('2.4.8', '2.4.8.0', '2.4.8.1', '2.4.8.*', '2.0', '2', '2.*',
+               '2.4.8b5')
 
 def strip_zeros(version_id):
     while version_id.endswith('.0'):
