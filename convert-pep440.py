@@ -25,45 +25,73 @@
 from pkg_resources import parse_version
 
 version_ids = ('2.4.8', '2.4.8.0', '2.4.8.1', '2.4.8.*', '2.0', '2', '2.*',
-               '2.4.8b5')
+               '2.4.8b5', '2.0.0b5')
 
-def strip_zeros(version_id):
-    while version_id.endswith('.0'):
-        version_id = version_id[:-2]
-    return version_id
+class RpmVersion():
+    def __init__(self, version_id):
+        version = parse_version(version_id)
+        if isinstance(version._version, str):
+            self.version = version._version
+        else:
+            self.epoch = version._version.epoch
+            self.version = list(version._version.release)
+            self.pre = version._version.pre
+            self.dev = version._version.dev
+            self.post = version._version.post
 
-def increment_minor(version_id):
-    next_ver = parse_version(version_id).base_version.split('.')
-    # Increment the least significant number
-    next_ver[-1] = str(int(next_ver[-1]) + 1)
-    return '.'.join(next_ver)
+    def increment(self):
+        self.version[-1] += 1
+        return self
+
+    def __str__(self):
+        if isinstance(self.version, str):
+            return self.version
+        if self.epoch:
+            rpm_epoch = str(self.epoch) + ':'
+        else:
+            rpm_epoch = ''
+        while self.version[-1] == 0:
+            self.version.pop()
+        rpm_version = '.'.join(str(x) for x in self.version)
+        if self.pre:
+            rpm_suffix = '~%s%d' % (self.pre[0], self.pre[1])
+        else:
+            rpm_suffix = ''
+        return '%s%s%s' % (rpm_epoch, rpm_version, rpm_suffix)
 
 def convert_compatible(name, operator, version_id):
     if version_id.endswith('.*'):
         return 'Invalid version'
-    upper_id = parse_version(version_id).base_version.split('.')
-    if len(upper_id) == 1:
+    version = RpmVersion(version_id)
+    if len(version.version) == 1:
         return 'Invalid version'
-    upper_id = increment_minor('.'.join(upper_id[:-1]))
+    upper_version = RpmVersion(version_id)
+    upper_version.version.pop()
+    upper_version.increment()
     return '(%s >= %s with %s < %s)' % (
-        name, strip_zeros(version_id), name, strip_zeros(upper_id))
+        name, version, name, upper_version)
 
 def convert_equal(name, operator, version_id):
     if version_id.endswith('.*'):
         version_id = version_id[:-2] + '.0'
         return convert_compatible(name, '~=', version_id)
-    return '%s = %s' % (name, strip_zeros(version_id))
+    version = RpmVersion(version_id)
+    return '%s = %s' % (name, version)
 
 def convert_not_equal(name, operator, version_id):
-    lower_id = version_id
     if version_id.endswith('.*'):
         version_id = version_id[:-2]
-        lower_id = increment_minor(version_id)
+        version = RpmVersion(version_id)
+        lower_version = RpmVersion(version_id).increment()
+    else:
+        version = RpmVersion(version_id)
+        lower_version = version
     return '(%s < %s or %s > %s)' % (
-        name, strip_zeros(version_id), name, strip_zeros(lower_id))
+        name, version, name, lower_version)
 
 def convert_ordered(name, operator, version_id):
-    return '%s %s %s' % (name, operator, strip_zeros(version_id))
+    version = RpmVersion(version_id)
+    return '%s %s %s' % (name, operator, version)
 
 operators = {'~=': convert_compatible,
              '==': convert_equal,
