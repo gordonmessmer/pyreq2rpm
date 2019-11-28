@@ -98,7 +98,8 @@ def convert_ordered(name, operator, version_id):
     if version_id.endswith('.*'):
         version_id = version_id[:-2]
         version = RpmVersion(version_id)
-        if '>' in operator:
+        if '>' == operator:
+            operator = '>='
             version.increment()
     else:
         version = RpmVersion(version_id)
