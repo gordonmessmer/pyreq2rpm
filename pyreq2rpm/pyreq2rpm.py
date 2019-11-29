@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-# Copyright 2019 pyproject-rpm-macros contributors
+# Copyright 2019 Gordon Messmer <gordon.messmer@gmail.com>
 #
 # Permission is hereby granted, free of charge, to any person
 # obtaining a copy of this software and associated documentation files
