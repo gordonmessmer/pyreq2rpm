@@ -22,10 +22,7 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from pkg_resources import parse_version, Requirement
-
-version_ids = ('2.4.8', '2.4.8.0', '2.4.8.1', '2.4.8.*', '2.0', '2', '2.*',
-               '2.4.8b5', '2.0.0b5', '2.4.8.post1', '2.0.post1')
+from pkg_resources import parse_version
 
 class RpmVersion():
     def __init__(self, version_id):
@@ -105,7 +102,7 @@ def convert_ordered(name, operator, version_id):
         version = RpmVersion(version_id)
     return '%s %s %s' % (name, operator, version)
 
-operators = {'~=': convert_compatible,
+OPERATORS = {'~=': convert_compatible,
              '==': convert_equal,
              '!=': convert_not_equal,
              '<=': convert_ordered,
@@ -113,11 +110,5 @@ operators = {'~=': convert_compatible,
              '>=': convert_ordered,
              '>':  convert_ordered}
 
-name = 'foobar'
-for x in operators.keys():
-    for y in version_ids:
-        try:
-            Requirement('%s %s %s' % (name, x, y))
-        except:
-            print('%s %s %s is invalid in Requirements' % (name, x, y))
-        print('%s %s : %s' % (x, y, operators[x](name, x, y)))
+def convert(name, operator, version_id):
+    return OPERATORS[operator](name, operator, version_id)
