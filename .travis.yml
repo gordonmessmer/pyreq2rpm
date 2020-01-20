@@ -1,6 +1,10 @@
-language: python
-python:
-  - "3.8"
+sudo: required
+
+services:
+  - docker
+
 install:
-  - pip install .
-script: pytest
+  - docker build -t pyreq2rpm-test .
+
+script:
+  - docker run -v $(pwd):$(pwd):z -w $(pwd) -it pyreq2rpm-test
