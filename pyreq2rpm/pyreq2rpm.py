@@ -22,7 +22,7 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from pkg_resources import parse_version
+from pkg_resources import Requirement, parse_version
 
 class RpmVersion():
     def __init__(self, version_id):
@@ -112,3 +112,14 @@ OPERATORS = {'~=': convert_compatible,
 
 def convert(name, operator, version_id):
     return OPERATORS[operator](name, operator, version_id)
+
+def convert_requirement(req):
+    parsed_req = Requirement.parse(req)
+    reqs = []
+    for spec in parsed_req.specs:
+        reqs.append(convert(parsed_req.key, spec[0], spec[1]))
+    if len(reqs) == 1:
+        return reqs[0]
+    else:
+        reqs.sort()
+        return '({})'.format(' with '.join(reqs))
