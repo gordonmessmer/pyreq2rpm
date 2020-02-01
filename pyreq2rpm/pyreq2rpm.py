@@ -80,6 +80,12 @@ def convert_equal(name, operator, version_id):
     version = RpmVersion(version_id)
     return '%s = %s' % (name, version)
 
+def convert_arbitrary_equal(name, operator, version_id):
+    if version_id.endswith('.*'):
+        return 'Invalid version'
+    version = RpmVersion(version_id)
+    return '%s = %s' % (name, version)
+
 def convert_not_equal(name, operator, version_id):
     if version_id.endswith('.*'):
         version_id = version_id[:-2]
@@ -93,9 +99,14 @@ def convert_not_equal(name, operator, version_id):
 
 def convert_ordered(name, operator, version_id):
     if version_id.endswith('.*'):
+        # PEP 440 does not define semantics for prefix matching
+        # with ordered comparisons
         version_id = version_id[:-2]
         version = RpmVersion(version_id)
         if '>' == operator:
+            # distutils does not behave this way, but this is
+            # their recommendation
+            # https://mail.python.org/archives/list/distutils-sig@python.org/thread/NWEQVTCX5CR2RKW2LT4H77PJTEINSX7P/
             operator = '>='
             version.increment()
     else:
@@ -104,6 +115,7 @@ def convert_ordered(name, operator, version_id):
 
 OPERATORS = {'~=': convert_compatible,
              '==': convert_equal,
+             '===': convert_arbitrary_equal,
              '!=': convert_not_equal,
              '<=': convert_ordered,
              '<':  convert_ordered,
