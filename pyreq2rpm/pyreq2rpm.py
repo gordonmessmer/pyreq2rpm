@@ -54,12 +54,14 @@ class RpmVersion():
             self.version.pop()
         rpm_version = '.'.join(str(x) for x in self.version)
         if self.pre:
-            rpm_suffix = '~%s' % ''.join(str(x) for x in self.pre)
+            rpm_suffix = '~{}'.format(''.join(str(x) for x in self.pre))
+        elif self.dev:
+            rpm_suffix = '~{}'.format(''.join(str(x) for x in self.dev))
         elif self.post:
-            rpm_suffix = '^post%d' % self.post[1]
+            rpm_suffix = '^post{}'.format(self.post[1])
         else:
             rpm_suffix = ''
-        return '%s%s%s' % (rpm_epoch, rpm_version, rpm_suffix)
+        return '{}{}{}'.format(rpm_epoch, rpm_version, rpm_suffix)
 
 def convert_compatible(name, operator, version_id):
     if version_id.endswith('.*'):
@@ -70,7 +72,7 @@ def convert_compatible(name, operator, version_id):
     upper_version = RpmVersion(version_id)
     upper_version.version.pop()
     upper_version.increment()
-    return '(%s >= %s with %s < %s)' % (
+    return '({} >= {} with {} < {})'.format(
         name, version, name, upper_version)
 
 def convert_equal(name, operator, version_id):
@@ -78,13 +80,13 @@ def convert_equal(name, operator, version_id):
         version_id = version_id[:-2] + '.0'
         return convert_compatible(name, '~=', version_id)
     version = RpmVersion(version_id)
-    return '%s = %s' % (name, version)
+    return '{} = {}'.format(name, version)
 
 def convert_arbitrary_equal(name, operator, version_id):
     if version_id.endswith('.*'):
         return 'Invalid version'
     version = RpmVersion(version_id)
-    return '%s = %s' % (name, version)
+    return '{} = {}'.format(name, version)
 
 def convert_not_equal(name, operator, version_id):
     if version_id.endswith('.*'):
@@ -94,7 +96,7 @@ def convert_not_equal(name, operator, version_id):
     else:
         version = RpmVersion(version_id)
         lower_version = version
-    return '(%s < %s or %s > %s)' % (
+    return '({} < {} or {} > {})'.format(
         name, version, name, lower_version)
 
 def convert_ordered(name, operator, version_id):
@@ -111,7 +113,7 @@ def convert_ordered(name, operator, version_id):
             version.increment()
     else:
         version = RpmVersion(version_id)
-    return '%s %s %s' % (name, operator, version)
+    return '{} {} {}'.format(name, operator, version)
 
 OPERATORS = {'~=': convert_compatible,
              '==': convert_equal,
