@@ -131,7 +131,9 @@ def convert_requirement(req):
     parsed_req = Requirement.parse(req)
     reqs = []
     for spec in parsed_req.specs:
-        reqs.append(convert(parsed_req.key, spec[0], spec[1]))
+        reqs.append(convert(parsed_req.project_name, spec[0], spec[1]))
+    if len(reqs) == 0:
+        return parsed_req.project_name
     if len(reqs) == 1:
         return reqs[0]
     else:
