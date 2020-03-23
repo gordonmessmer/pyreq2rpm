@@ -104,13 +104,14 @@ def test_convert(arg, expected):
     assert run_rpmbuild(convert(*arg)) == 0
 
 @pytest.mark.parametrize(('arg', 'expected'), [
-    (['pyparsing>=2.0.1,!=2.0.4,!=2.1.2,!=2.1.6'],
+    ('pyparsing', 'pyparsing'),
+    ('pyparsing>=2.0.1,!=2.0.4,!=2.1.2,!=2.1.6',
      '((pyparsing < 2.0.4 or pyparsing > 2.0.4)'
      ' with (pyparsing < 2.1.2 or pyparsing > 2.1.2)'
      ' with (pyparsing < 2.1.6 or pyparsing > 2.1.6)'
      ' with pyparsing >= 2.0.1)'),
-    (['babel>=1.3,!=2.0'], '((babel < 2 or babel > 2) with babel >= 1.3)'),
+    ('babel>=1.3,!=2.0', '((babel < 2 or babel > 2) with babel >= 1.3)'),
 ])
 def test_convert_requirement(arg, expected):
-    assert convert_requirement(*arg) == expected
-    assert run_rpmbuild(convert_requirement(*arg)) == 0
+    assert convert_requirement(arg) == expected
+    assert run_rpmbuild(convert_requirement(arg)) == 0
