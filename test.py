@@ -5,7 +5,7 @@ from pkg_resources import Requirement
 from pyreq2rpm import pyreq2rpm
 
 VERSION_IDS = ('2.4.8', '2.4.8.0', '2.4.8.1', '2.4.8.*', '2.0', '2', '2.*',
-               '2.4.8b5', '2.0.0b5', '2.4.8.post1', '2.0.post1')
+               '2.4.8b5', '2.0.0b5', '2.4.8.post1', '2.0.post1', '0.0')
 
 def test_rpmbuild(dep):
     e = subprocess.run(['rpmbuild', '--nobuild', '--define',
