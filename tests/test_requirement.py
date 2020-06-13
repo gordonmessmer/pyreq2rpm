@@ -768,6 +768,14 @@ import pkg_resources
     ('2', 'foobar > 2.0.post1', False),
     ('2.0.0b5', 'foobar > 2.0.post1', False),
     ('2.0.post1', 'foobar > 2.0.post1', False),
+    ('1.dev1', 'foobar > 1a1', False),
+    ('1a1', 'foobar > 1.dev1', True),
+    ('1a1', 'foobar > 1b1', False),
+    ('1b1', 'foobar > 1a1', True),
+    ('1b1', 'foobar > 1rc1', False),
+    ('1', 'foobar > 1rc1', True),
+    ('1', 'foobar > 1.post1', False),
+    ('1.post1', 'foobar > 1', False),
 ])
 def test_requirement(version, arg, expected):
     assert (version in pkg_resources.Requirement.parse(arg)) == expected

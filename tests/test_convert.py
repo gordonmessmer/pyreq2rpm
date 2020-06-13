@@ -106,6 +106,9 @@ def run_rpmbuild(dep):
     (['foobar', '>', '2.4.8.post1'], 'foobar > 2.4.8^post1'),
     (['foobar', '>', '2.0.post1'], 'foobar > 2^post1'),
     (['foobar', '>', '0.0'], 'foobar > 0'),
+    (['foobar', '>', '1.0.0.dev4'], 'foobar > 1~~dev4'),
+    (['foobar', '>', '1.1.1a2'], 'foobar > 1.1.1~a2'),
+    (['foobar', '>', '1.1.0rc3'], 'foobar > 1.1~rc3'),
 ])
 def test_convert(arg, expected):
     assert convert(*arg) == expected
