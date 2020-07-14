@@ -107,9 +107,11 @@ def convert_ordered(name, operator, version_id):
         version = RpmVersion(version_id)
         if operator == '>':
             # distutils will allow a prefix match with '>'
+            # see: https://github.com/pypa/packaging/issues/320
             operator = '>='
         if operator == '<=':
             # distutils will not allow a prefix match with '<='
+            # see: https://github.com/pypa/packaging/issues/320
             operator = '<'
     else:
         version = RpmVersion(version_id)

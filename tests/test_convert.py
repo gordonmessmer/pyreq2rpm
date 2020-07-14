@@ -61,10 +61,10 @@ def run_rpmbuild(dep):
     (['foobar', '<=', '2.4.8'], 'foobar <= 2.4.8'),
     (['foobar', '<=', '2.4.8.0'], 'foobar <= 2.4.8'),
     (['foobar', '<=', '2.4.8.1'], 'foobar <= 2.4.8.1'),
-    (['foobar', '<=', '2.4.8.*'], 'foobar < 2.4.8'),
+    (['foobar', '<=', '2.4.8.*'], 'foobar < 2.4.8'),  # Legacy not-yet-deprecated behaviour, see: https://github.com/pypa/packaging/issues/320
     (['foobar', '<=', '2.0'], 'foobar <= 2'),
     (['foobar', '<=', '2'], 'foobar <= 2'),
-    (['foobar', '<=', '2.*'], 'foobar < 2'),
+    (['foobar', '<=', '2.*'], 'foobar < 2'),  # Legacy not-yet-deprecated behaviour, see: https://github.com/pypa/packaging/issues/320
     (['foobar', '<=', '2.4.8b5'], 'foobar <= 2.4.8~b5'),
     (['foobar', '<=', '2.0.0b5'], 'foobar <= 2~b5'),
     (['foobar', '<=', '2.4.8.post1'], 'foobar <= 2.4.8^post1'),
@@ -97,10 +97,10 @@ def run_rpmbuild(dep):
     (['foobar', '>', '2.4.8'], 'foobar > 2.4.8'),
     (['foobar', '>', '2.4.8.0'], 'foobar > 2.4.8'),
     (['foobar', '>', '2.4.8.1'], 'foobar > 2.4.8.1'),
-    (['foobar', '>', '2.4.8.*'], 'foobar >= 2.4.8'),
+    (['foobar', '>', '2.4.8.*'], 'foobar >= 2.4.8'),  # Legacy not-yet-deprecated behaviour, see: https://github.com/pypa/packaging/issues/320
     (['foobar', '>', '2.0'], 'foobar > 2'),
     (['foobar', '>', '2'], 'foobar > 2'),
-    (['foobar', '>', '2.*'], 'foobar >= 2'),
+    (['foobar', '>', '2.*'], 'foobar >= 2'),  # Legacy not-yet-deprecated behaviour, see: https://github.com/pypa/packaging/issues/320
     (['foobar', '>', '2.4.8b5'], 'foobar > 2.4.8~b5'),
     (['foobar', '>', '2.0.0b5'], 'foobar > 2~b5'),
     (['foobar', '>', '2.4.8.post1'], 'foobar > 2.4.8^post1'),
