@@ -103,6 +103,11 @@ def convert_ordered(name, operator, version_id):
     if version_id.endswith('.*'):
         # PEP 440 does not define semantics for prefix matching
         # with ordered comparisons
+        # see: https://github.com/pypa/packaging/issues/320
+        # and: https://github.com/pypa/packaging/issues/321
+        # This style of specifier is officially "unsupported",
+        # even though it is processed.  Support may be removed
+        # in version 21.0.
         version_id = version_id[:-2]
         version = RpmVersion(version_id)
         if operator == '>':
