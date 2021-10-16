@@ -834,14 +834,6 @@ def test_requirement(version, op, arg, expected):
         # False
         return
 
-    if ver_a.pre and not 'a' in ver_b and not 'b' in ver_b and not 'rc' in ver_b and rpm_op == '<':
-        # Similar to the 'post' version exception above, distutils will
-        # not use a prerelease version to satisfy "< version"
-        #
-        # >>> '2.0b5' in pkg_resources.Requirement.parse('foo<2')
-        # False
-        ver_a.pre = None
-
     if ver_a.pre and '>' in rpm_op and '.*' in arg:
         # distutils will allow a prerelease to match both '>' and '>='
         # when used with prefix matching.

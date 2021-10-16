@@ -121,6 +121,8 @@ def convert_ordered(name, operator, version_id):
             operator = '<'
     else:
         version = RpmVersion(version_id)
+    if operator == '<' and not version.pre and not version.dev and not version.post:
+        version = '{}~'.format(version)
     return '{} {} {}'.format(name, operator, version)
 
 OPERATORS = {'~=': convert_compatible,
