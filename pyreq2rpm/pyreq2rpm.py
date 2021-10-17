@@ -35,6 +35,9 @@ class RpmVersion():
             self.pre = version._version.pre
             self.dev = version._version.dev
             self.post = version._version.post
+            # version.local is ignored as it is not expected to appear
+            # in public releases
+            # https://www.python.org/dev/peps/pep-0440/#local-version-identifiers
 
     def increment(self):
         self.version[-1] += 1
