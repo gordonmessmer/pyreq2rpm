@@ -799,7 +799,7 @@ def test_requirement(version, op, arg, expected):
     # requirement expressions.  In these cases, the test will "return" because
     # we know that we produce different results.
 
-    if ver_a.post and not 'post' in ver_b and rpm_op == '>':
+    if ver_a.post and 'b' in ver_b and rpm_op == '>':
         # "post" versions in Python must be treated as greater than the same version
         # lacking a post component, but they must not satisfy a ">" requirement
         # unless the requirement also has a post component.
