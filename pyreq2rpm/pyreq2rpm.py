@@ -95,12 +95,16 @@ def convert_not_equal(name, operator, version_id):
     if version_id.endswith('.*'):
         version_id = version_id[:-2]
         version = RpmVersion(version_id)
-        lower_version = RpmVersion(version_id).increment()
+        version_gt = RpmVersion(version_id).increment()
+        version_gt_operator = '>='
+        # Prevent pre-releases from satisfying a < requirement
+        version = '{}~'.format(version)
     else:
         version = RpmVersion(version_id)
-        lower_version = version
-    return '({} < {} or {} > {})'.format(
-        name, version, name, lower_version)
+        version_gt = version
+        version_gt_operator = '>'
+    return '({} < {} or {} {} {})'.format(
+        name, version, name, version_gt_operator, version_gt)
 
 def convert_ordered(name, operator, version_id):
     if version_id.endswith('.*'):
