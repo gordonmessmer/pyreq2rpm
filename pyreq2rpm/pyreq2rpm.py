@@ -97,8 +97,8 @@ def convert_not_equal(name, operator, version_id):
         version = RpmVersion(version_id)
         version_gt = RpmVersion(version_id).increment()
         version_gt_operator = '>='
-        # Prevent pre-releases from satisfying a < requirement
-        version = '{}~'.format(version)
+        # Prevent dev and pre-releases from satisfying a < requirement
+        version = '{}~~'.format(version)
     else:
         version = RpmVersion(version_id)
         version_gt = version
@@ -125,9 +125,9 @@ def convert_ordered(name, operator, version_id):
             operator = '<'
     else:
         version = RpmVersion(version_id)
-    # Prevent pre-releases from satisfying a < requirement
+    # Prevent dev and pre-releases from satisfying a < requirement
     if operator == '<' and not version.pre and not version.dev and not version.post:
-        version = '{}~'.format(version)
+        version = '{}~~'.format(version)
     # Prevent post-releases from satisfying a > requirement
     if operator == '>' and not version.pre and not version.dev and not version.post:
         version = '{}.0'.format(version)
