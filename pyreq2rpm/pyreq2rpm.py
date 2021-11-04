@@ -125,12 +125,16 @@ def convert_ordered(name, operator, version_id):
             operator = '<'
     else:
         version = RpmVersion(version_id)
-    # Prevent dev and pre-releases from satisfying a < requirement
-    if operator == '<' and not version.pre and not version.dev and not version.post:
-        version = '{}~~'.format(version)
-    # Prevent post-releases from satisfying a > requirement
-    if operator == '>' and not version.pre and not version.dev and not version.post:
-        version = '{}.0'.format(version)
+    # For backwards compatibility, fallback to previous behavior with LegacyVersions
+    try:
+        # Prevent dev and pre-releases from satisfying a < requirement
+        if operator == '<' and not version.pre and not version.dev and not version.post:
+            version = '{}~~'.format(version)
+        # Prevent post-releases from satisfying a > requirement
+        if operator == '>' and not version.pre and not version.dev and not version.post:
+            version = '{}.0'.format(version)
+    except AttributeError:
+        pass
     return '{} {} {}'.format(name, operator, version)
 
 OPERATORS = {'~=': convert_compatible,
