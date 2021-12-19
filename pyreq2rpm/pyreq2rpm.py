@@ -39,6 +39,9 @@ class RpmVersion():
             # in public releases
             # https://www.python.org/dev/peps/pep-0440/#local-version-identifiers
 
+    def is_legacy(self):
+        return isinstance(self.version, str)
+
     def increment(self):
         self.version[-1] += 1
         self.pre = None
@@ -47,7 +50,7 @@ class RpmVersion():
         return self
 
     def __str__(self):
-        if isinstance(self.version, str):
+        if self.is_legacy():
             return self.version
         if self.epoch:
             rpm_epoch = str(self.epoch) + ':'
@@ -70,6 +73,9 @@ def convert_compatible(name, operator, version_id):
     if version_id.endswith('.*'):
         return 'Invalid version'
     version = RpmVersion(version_id)
+    if version.is_legacy():
+        # LegacyVersions are not supported in this context
+        return 'Invalid version'
     if len(version.version) == 1:
         return 'Invalid version'
     upper_version = RpmVersion(version_id)
@@ -95,6 +101,9 @@ def convert_not_equal(name, operator, version_id):
     if version_id.endswith('.*'):
         version_id = version_id[:-2]
         version = RpmVersion(version_id)
+        if version.is_legacy():
+            # LegacyVersions are not supported in this context
+            return 'Invalid version'
         version_gt = RpmVersion(version_id).increment()
         version_gt_operator = '>='
         # Prevent dev and pre-releases from satisfying a < requirement
@@ -125,12 +134,14 @@ def convert_ordered(name, operator, version_id):
             operator = '<'
     else:
         version = RpmVersion(version_id)
-    # Prevent dev and pre-releases from satisfying a < requirement
-    if operator == '<' and not version.pre and not version.dev and not version.post:
-        version = '{}~~'.format(version)
-    # Prevent post-releases from satisfying a > requirement
-    if operator == '>' and not version.pre and not version.dev and not version.post:
-        version = '{}.0'.format(version)
+    # For backwards compatibility, fallback to previous behavior with LegacyVersions
+    if not version.is_legacy():
+        # Prevent dev and pre-releases from satisfying a < requirement
+        if operator == '<' and not version.pre and not version.dev and not version.post:
+            version = '{}~~'.format(version)
+        # Prevent post-releases from satisfying a > requirement
+        if operator == '>' and not version.pre and not version.dev and not version.post:
+            version = '{}.0'.format(version)
     return '{} {} {}'.format(name, operator, version)
 
 OPERATORS = {'~=': convert_compatible,

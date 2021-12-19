@@ -109,6 +109,9 @@ def run_rpmbuild(dep):
     (['foobar', '>', '1.0.0.dev4'], 'foobar > 1~~dev4'),
     (['foobar', '>', '1.1.1a2'], 'foobar > 1.1.1~a2'),
     (['foobar', '>', '1.1.0rc3'], 'foobar > 1.1~rc3'),
+    (['foobar', '!=', 'dev.*'], 'Invalid version'), # see https://bugzilla.redhat.com/2019954
+    (['foobar', '~=', 'dev'], 'Invalid version'), # see https://bugzilla.redhat.com/2019954
+    (['foobar', '>', 'dev'], 'foobar > dev'), # see https://bugzilla.redhat.com/2019954
 ])
 def test_convert(arg, expected):
     assert convert(*arg) == expected
