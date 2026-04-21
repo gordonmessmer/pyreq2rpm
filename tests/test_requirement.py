@@ -75,7 +75,7 @@ from pyreq2rpm.pyreq2rpm import RpmVersion, convert
     ('2.0', '~=', '2.0.0b5', True),
     ('2', '~=', '2.0.0b5', True),
     ('2.0.0b5', '~=', '2.0.0b5', True),
-    ('2.0.post1', '~=', '2.0.0b5', False),
+    ('2.0.post1', '~=', '2.0.0b5', True),
     ('2.4.8', '~=', '2.0.post1', True),
     ('2.4.8.0', '~=', '2.0.post1', True),
     ('2.4.8.1', '~=', '2.0.post1', True),
