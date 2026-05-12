@@ -59,11 +59,11 @@ class RpmVersion():
         while len(self.version) > 1 and self.version[-1] == 0:
             self.version.pop()
         rpm_version = '.'.join(str(x) for x in self.version)
-        if self.pre:
+        if self.pre is not None:
             rpm_suffix = '~{}'.format(''.join(str(x) for x in self.pre))
-        elif self.dev:
+        elif self.dev is not None:
             rpm_suffix = '~~dev{}'.format(self.dev)
-        elif self.post:
+        elif self.post is not None:
             rpm_suffix = '^post{}'.format(self.post)
         else:
             rpm_suffix = ''
@@ -137,10 +137,10 @@ def convert_ordered(name, operator, version_id):
     # For backwards compatibility, fallback to previous behavior with LegacyVersions
     if not version.is_legacy():
         # Prevent dev and pre-releases from satisfying a < requirement
-        if operator == '<' and not version.pre and not version.dev and not version.post:
+        if operator == '<' and version.pre is None and version.dev is None and version.post is None:
             version = '{}~~'.format(version)
         # Prevent post-releases from satisfying a > requirement
-        if operator == '>' and not version.pre and not version.dev and not version.post:
+        if operator == '>' and version.pre is None and version.dev is None and version.post is None:
             version = '{}.0'.format(version)
     return '{} {} {}'.format(name, operator, version)
 
