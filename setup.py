@@ -8,7 +8,7 @@ setup(
     description='Convert Python requirements to rpm',
     license='MIT',
     packages=['pyreq2rpm'],
-    install_requires=['setuptools'],
+    install_requires=['packaging'],
     setup_requires=['setuptools'],
     tests_require=['pytest'],
 )

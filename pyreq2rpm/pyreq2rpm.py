@@ -22,11 +22,12 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from pkg_resources import Requirement, parse_version
+from packaging.requirements import Requirement
+from packaging.version import Version
 
 class RpmVersion():
     def __init__(self, version_id):
-        version = parse_version(version_id)
+        version = Version(version_id)
         if version.__class__.__name__ == 'LegacyVersion':
             self.version = version._version
         else:
@@ -157,12 +158,12 @@ def convert(name, operator, version_id):
     return OPERATORS[operator](name, operator, version_id)
 
 def convert_requirement(req):
-    parsed_req = Requirement.parse(req)
+    parsed_req = Requirement(req)
     reqs = []
-    for spec in parsed_req.specs:
-        reqs.append(convert(parsed_req.project_name, spec[0], spec[1]))
+    for spec in parsed_req.specifier:
+        reqs.append(convert(parsed_req.name, spec.operator, spec.version))
     if len(reqs) == 0:
-        return parsed_req.project_name
+        return parsed_req.name
     if len(reqs) == 1:
         return reqs[0]
     else:
