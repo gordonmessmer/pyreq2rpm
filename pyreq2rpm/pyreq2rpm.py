@@ -23,11 +23,11 @@
 # SOFTWARE.
 
 from packaging.requirements import Requirement
-from packaging.version import Version
+from packaging.version import parse
 
 class RpmVersion():
     def __init__(self, version_id):
-        version = Version(version_id)
+        version = parse(version_id)
         if version.__class__.__name__ == 'LegacyVersion':
             self.version = version._version
         else:
